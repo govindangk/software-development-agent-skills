@@ -21,12 +21,16 @@ Then follow the matching path below.
 
 ### Path A — New project
 
-Ask all 7 axes in one message. Do not assume defaults.
+Ask all 8 axes in one message. Do not assume defaults.
 
 ```
 Before I scaffold this, I need to know your project setup:
 
-1. **Database / ORM**
+1. **HTTP adapter** — which platform is NestJS running on?
+   - Express (default — `@nestjs/platform-express`)
+   - Fastify (`@nestjs/platform-fastify`)
+
+2. **Database / ORM**
    - Drizzle ORM (sql`` tagged templates)
    - Prisma (prisma client)
    - TypeORM (repository pattern / query builder)
@@ -34,82 +38,110 @@ Before I scaffold this, I need to know your project setup:
    - Raw `pg` / `postgres.js`
    - Other (describe)
 
-2. **Logger**
+3. **Logger**
    - Pino (via `pino` or `nestjs-pino`)
    - Winston
    - NestJS built-in `Logger`
    - Custom (describe the injection token or class)
    - None
 
-3. **Validation**
+4. **Validation**
    - Zod (`safeParse` at the controller boundary)
    - `class-validator` + `class-transformer` + `ValidationPipe`
    - Manual / other
 
-4. **Injection style**
+5. **Injection style**
    - String tokens (`@Inject('db')`, `@Inject('logger')`)
    - Class-based (`@InjectRepository(Entity)`, direct class injection)
    - Mixed
 
-5. **Response envelope** — how should list endpoints return data?
+6. **Response envelope** — how should list endpoints return data?
    - `{ data: T[], total: number }`
    - `{ items: T[], pagination: { page, limit, total } }`
    - Bare array `T[]`
    - Other (describe)
 
-6. **Auth / guards** — do routes need authentication?
+7. **Auth / guards** — do routes need authentication?
    - None / open routes
    - JWT guard — `@UseGuards(JwtAuthGuard)` on controller class
    - API key or custom guard (describe the decorator / token)
    - Per-endpoint opt-in (no class-level guard)
 
-7. **Tests** — should test files be scaffolded?
+8. **Tests** — should test files be scaffolded?
    - Yes — Jest unit tests for service + controller
    - No
 ```
 
 After receiving answers, go to the **Confirmation block** below.
 
+> **Always included for new projects:** a `/health` endpoint is scaffolded as part of every new project setup — no need to ask. See the Health Check template in Patterns & Templates.
+
 ---
 
-### Path B — Existing project (infer first, ask minimally)
+### Path B — Existing project (read first, ask minimally)
 
-1. Read the following files:
+1. **Read the codebase — no assumptions about the stack.**
+   Open and read:
+   - `src/main.ts` — reveals HTTP adapter (Express vs Fastify) and any global prefix (`app.setGlobalPrefix`)
    - `src/app.module.ts`
-   - First match of `src/**/*.controller.ts`
-   - First match of `src/database/repositories/*.ts` (or ORM equivalent)
+   - First match of `src/**/*.controller.ts` — check the `@Controller('...')` path prefix
+   - First match of `src/**/*.repository.ts` (look broadly — not just `src/database/`)
    - First match of `src/**/*.service.ts`
-   - Check for `src/**/*.spec.ts` to determine test convention
+   - Check whether any `src/**/*.spec.ts` files exist
 
-2. Infer all 7 axes from the code. Mark each as ✅ (detected) or ❓ (unclear).
+2. **Identify the route path convention first — before anything else.**
+   Look for:
+   - A global prefix set in `main.ts` (e.g. `app.setGlobalPrefix('api')`)
+   - The path string inside `@Controller('...')` on existing controllers
+   - Any versioning pattern (e.g. `@Controller('api/v1/widgets')`, `app.enableVersioning()`)
 
-3. Print the detection summary:
+   If a consistent path convention is found, record it.
+   If absent or unclear, **stop and ask the user immediately** before continuing:
+
+   ```
+   What route prefix convention does this project use?
+   Examples: `/api`, `/api/v1`, none (controllers use bare paths like `/widgets`)
+   ```
+
+   Do not proceed with the rest of the detection until this is answered.
+
+3. **Describe exactly what you see — for every axis, across every library.**
+   Quote the actual import, method call, decorator, or pattern found in the code.
+   Do not assume, guess, or map observations to a known library unless the import explicitly names it.
+   This applies equally to ORM, logger, validation, DI style, response shape, auth, and tests.
+   If you cannot determine an axis from the sampled files, mark it ❓ — do not fill in a default.
+
+4. **Print the detection summary** using what the code actually shows:
 
 ```
 Detected from existing code:
-✅ ORM: Drizzle (sql tagged templates, NodePgDatabase)
-✅ Validation: Zod (safeParse pattern in controllers)
-✅ Logger: Pino (@Inject('logger'), pino Logger type)
-✅ DI style: String tokens
-✅ Response envelope: { data: T[], total: number }
-❓ Auth: unclear — no guards found in sampled files
+✅ Route prefix: [e.g. "global prefix 'api' set in main.ts — controllers use bare paths"]
+✅ HTTP adapter: [e.g. "@nestjs/platform-fastify in package.json, FastifyAdapter in main.ts"]
+✅ ORM: [exactly what you observed — e.g. "prisma.user.findMany() calls in repository"]
+✅ Validation: [e.g. "class-validator decorators (@IsString, @IsUUID) on DTO classes"]
+✅ Logger: [e.g. "constructor-injected NestJS Logger, no custom token"]
+✅ DI style: [e.g. "class-based injection — no @Inject() string tokens found"]
+✅ Response envelope: [e.g. "{ data: T[], total: number } — seen in ProductService.findAll"]
+❓ Auth: unclear — no guards or auth decorators found in sampled files
 ❓ Tests: unclear — no *.spec.ts files found
 
 → Please confirm the ❓ items before I proceed.
 ```
 
-4. Ask **only** about the ❓ axes. If all 7 are clear, skip straight to the confirmation block.
+5. Ask **only** about the ❓ axes. If all axes are clear, skip straight to the confirmation block.
 
-5. After receiving answers, go to the **Confirmation block** below.
+6. After receiving answers, go to the **Confirmation block** below.
 
 ---
 
 ### Confirmation block (both paths)
 
-Before generating any file, always emit this summary and wait for a go-ahead:
+Emit this summary and wait for the user to confirm before doing anything else:
 
 ```
 Stack confirmed:
+- Route prefix: [value]
+- HTTP adapter: [value]
 - ORM: [value]
 - Validation: [value]
 - Logger: [value]
@@ -118,20 +150,42 @@ Stack confirmed:
 - Auth: [value]
 - Tests: [value]
 
-Proceeding to scaffold...
+Ready to update the skill config and then scaffold. Confirm?
 ```
 
-Adapt all generated code to match the confirmed stack. The templates below use **Drizzle + Pino (string tokens) + Zod** as the reference implementation — swap the relevant sections based on confirmed choices.
+---
+
+### Self-update (runs once, after confirmation)
+
+Once the user confirms, **edit this SKILL.md file** to lock in the project's stack:
+
+1. **Update the Stack Reference table** — replace every `[from gather]` cell:
+   - **Path A (new project):** write the confirmed technology name (e.g. `Prisma`, `Zod`, `Pino`)
+   - **Path B (existing project):** write the exact pattern observed in the code — quote the actual call, decorator, or import (e.g. `prisma.user.findMany({ where, skip, take })`, `@IsString() / @IsUUID() on DTO classes`, `@Inject('logger') private readonly logger: Logger`). The Notes column is where the pattern lives; the Confirmed Tech column names the library if identifiable, or describes the mechanism if not.
+
+2. **Update the Project Structure diagram** — rewrite the `src/` tree to reflect the actual folder layout:
+   - For an existing project (Path B): walk `src/` and map real directories and files
+   - For a new project (Path A): draw the target layout based on the confirmed stack
+     (e.g. Prisma projects have `prisma/schema.prisma`, not `src/database/schema/`; TypeORM projects co-locate entities differently)
+   - Remove or add nodes to match what is or will be real — do not leave template placeholders
+
+3. **Do not change anything else** in this file.
+
+After the self-update is written, proceed to scaffold.
+
+Adapt all generated code to match the confirmed stack. The templates below use **Drizzle + Pino (string tokens) + Zod** as the reference implementation — swap sections based on confirmed choices.
 
 ---
 
 ## Stack Reference
 
-> Populated from the gather phase. Do not generate code until this table is complete.
+> Updated by the skill during setup. If all rows still show `[from gather]`, run Step 1 first.
 
 | Layer | Confirmed Tech | Notes |
 |---|---|---|
 | Framework | NestJS | Pure REST, no GraphQL |
+| Route prefix | [from gather] | |
+| HTTP adapter | [from gather] | |
 | Validation | [from gather] | |
 | ORM | [from gather] | |
 | Logger | [from gather] | |
@@ -143,6 +197,8 @@ Adapt all generated code to match the confirmed stack. The templates below use *
 ---
 
 ## Project Structure
+
+> Updated by the skill during setup to reflect the actual project layout.
 
 ```
 src/
@@ -164,8 +220,6 @@ src/
     └── entities/
         └── <domain>.entity.ts
 ```
-
-**Repositories are centralized in `src/database/repositories/` — never co-located with domain modules.**
 
 ---
 
@@ -575,7 +629,39 @@ Register in `app.module.ts` imports array immediately.
 
 ---
 
-### 10. Error Handling
+### 10. Health Check (new projects — always scaffold)
+
+Register directly on `AppModule` — no separate health module needed.
+
+```typescript
+// health/health.controller.ts
+import { Controller, Get } from '@nestjs/common';
+
+@Controller('health')
+export class HealthController {
+  @Get()
+  check() {
+    return { status: 'ok' };
+  }
+}
+```
+
+```typescript
+// app.module.ts
+import { HealthController } from './health/health.controller';
+
+@Module({
+  controllers: [HealthController],
+  // ...
+})
+export class AppModule {}
+```
+
+Responds `200 { status: 'ok' }` at `GET /health`. No service, no repository, no module file.
+
+---
+
+### 11. Error Handling
 
 ```typescript
 // Surface DB errors without leaking internals

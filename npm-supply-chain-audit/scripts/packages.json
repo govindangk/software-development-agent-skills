@@ -1,0 +1,232 @@
+{
+  "_comment": "Threat intelligence for the npm supply chain audit scanner. Add new attack families or compromised package versions here — no code changes needed.",
+  "knownBadPackages": {
+    "axios@1.14.1": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": "1.14.0",
+      "detail": "Maintainer account hijack. Injects plain-crypto-js RAT dropper.",
+      "fix": "Pin to `1.14.0`. Rotate all creds. Check RAT artifacts."
+    },
+    "axios@0.30.4": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": "0.30.3",
+      "detail": "Maintainer account hijack. Injects plain-crypto-js RAT dropper.",
+      "fix": "Pin to `0.30.3`. Rotate all creds. Check RAT artifacts."
+    },
+    "plain-crypto-js@4.2.1": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": null,
+      "detail": "Typosquat of crypto-js. Postinstall RAT dropper (macOS/Win/Linux).",
+      "fix": "Remove entirely. This package should not exist."
+    },
+    "@shadanai/openclaw@2026.3.28-2": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": null,
+      "detail": "Vendors malicious plain-crypto-js.",
+      "fix": "Remove entirely."
+    },
+    "@shadanai/openclaw@2026.3.28-3": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": null,
+      "detail": "Vendors malicious plain-crypto-js.",
+      "fix": "Remove entirely."
+    },
+    "@shadanai/openclaw@2026.3.31-1": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": null,
+      "detail": "Vendors malicious plain-crypto-js.",
+      "fix": "Remove entirely."
+    },
+    "@shadanai/openclaw@2026.3.31-2": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": null,
+      "detail": "Vendors malicious plain-crypto-js.",
+      "fix": "Remove entirely."
+    },
+    "@qqbrowser/openclaw-qbot@0.0.130": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "safe": null,
+      "detail": "Ships tampered axios@1.14.1 with plain-crypto-js.",
+      "fix": "Remove entirely."
+    },
+    "@ctrl/tinycolor@4.1.1": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "4.0.0",
+      "detail": "Shai-Hulud worm. Preinstall credential theft + self-propagation.",
+      "fix": "Pin to `4.0.0`. Rotate all tokens."
+    },
+    "@ctrl/tinycolor@4.1.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "4.0.0",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `4.0.0`. Rotate all tokens."
+    },
+    "ngx-bootstrap@14.1.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "14.1.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `14.1.1`. Rotate all tokens."
+    },
+    "angulartics2@14.1.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "14.1.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `14.1.1`. Rotate all tokens."
+    },
+    "koa2-swagger-ui@5.11.1": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "5.10.0",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `5.10.0`. Rotate all tokens."
+    },
+    "koa2-swagger-ui@5.11.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "5.10.0",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `5.10.0`. Rotate all tokens."
+    },
+    "json-rules-engine-simplified@0.2.1": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "0.1.0",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `0.1.0`. Rotate all tokens."
+    },
+    "json-rules-engine-simplified@0.2.4": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "0.1.0",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `0.1.0`. Rotate all tokens."
+    },
+    "@ctrl/deluge@7.2.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "7.2.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `7.2.1`. Rotate all tokens."
+    },
+    "@ctrl/golang-template@1.4.3": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "1.4.2",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `1.4.2`. Rotate all tokens."
+    },
+    "@ctrl/ngx-codemirror@7.0.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "7.0.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `7.0.1`. Rotate all tokens."
+    },
+    "@ctrl/ngx-csv@6.0.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "6.0.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `6.0.1`. Rotate all tokens."
+    },
+    "@ctrl/ngx-emoji-mart@9.2.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "9.2.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `9.2.1`. Rotate all tokens."
+    },
+    "@ctrl/ngx-rightclick@4.0.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "4.0.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `4.0.1`. Rotate all tokens."
+    },
+    "@ctrl/qbittorrent@9.7.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "9.7.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `9.7.1`. Rotate all tokens."
+    },
+    "@ctrl/react-adsense@2.0.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "2.0.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `2.0.1`. Rotate all tokens."
+    },
+    "@ctrl/shared-torrent@6.3.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "6.3.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `6.3.1`. Rotate all tokens."
+    },
+    "@ctrl/torrent-file@4.1.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "4.1.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `4.1.1`. Rotate all tokens."
+    },
+    "@ctrl/transmission@7.3.1": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "7.3.0",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `7.3.0`. Rotate all tokens."
+    },
+    "@ctrl/ts-base32@4.0.2": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "4.0.1",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `4.0.1`. Rotate all tokens."
+    },
+    "@ctrl/magnet-link@4.0.4": {
+      "severity": "CRITICAL",
+      "family": "shai-hulud",
+      "safe": "4.0.3",
+      "detail": "Shai-Hulud worm.",
+      "fix": "Pin to `4.0.3`. Rotate all tokens."
+    }
+  },
+  "bannedPackages": {
+    "plain-crypto-js": {
+      "severity": "CRITICAL",
+      "family": "axios-rat",
+      "detail": "Typosquat of crypto-js. RAT dropper.",
+      "fix": "Remove entirely."
+    }
+  },
+  "bannedFiles": {
+    "setup_bun.js": {
+      "family": "shai-hulud",
+      "detail": "Shai-Hulud v2 payload installer"
+    },
+    "bun_environment.js": {
+      "family": "shai-hulud",
+      "detail": "Shai-Hulud v2 obfuscated payload"
+    }
+  },
+  "suspiciousScriptPatterns": [
+    { "pattern": "setup_bun\\.js", "description": "Possible Shai-Hulud payload" },
+    { "pattern": "bun_environment\\.js", "description": "Possible Shai-Hulud payload" },
+    { "pattern": "plain-crypto-js", "description": "Possible axios RAT dependency" },
+    { "pattern": "sfrclak\\.com", "description": "Axios RAT C2 domain" }
+  ]
+}

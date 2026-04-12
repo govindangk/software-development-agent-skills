@@ -6,20 +6,25 @@ Do **not** generate any code before completing this step.
 
 ### Step 0 — Ask project type
 
-Ask this single question first:
+Ask these two questions first (one message):
 
 ```
-Is this a new project or an existing one?
+1. Is this a new project or an existing one?
+   A) New project — I'll ask about your preferred stack and scaffold from scratch.
+   B) Existing project — I'll read your codebase and infer the stack before touching anything.
 
-A) New project — I'll ask about your preferred stack and scaffold from scratch.
-B) Existing project — I'll read your codebase and infer the stack before touching anything.
+2. What API style?
+   A) REST
+   B) GraphQL
 ```
 
-Then follow the matching path below.
+Then follow the matching path below. **GraphQL projects always use Fastify + Mercurius** — do not ask about the HTTP adapter separately for GraphQL.
 
 ---
 
-### Path A — New project
+### Path A — New project (REST)
+
+**Package manager:** Before scaffolding, check whether the project is being added to an existing monorepo. If yes, read the root `package.json` or workspace config and use whatever package manager is already in use. If no (standalone new project), always use **pnpm**.
 
 Ask all 8 axes in one message. Do not assume defaults.
 
@@ -74,7 +79,63 @@ Before I scaffold this, I need to know your project setup:
 
 After receiving answers, go to the **Confirmation block** below.
 
-> **Always included for new projects:** a `/health` endpoint is scaffolded as part of every new project setup — no need to ask. See the Health Check template in Patterns & Templates.
+> **Always included for new REST projects:** a `/health` endpoint is scaffolded as part of every new project setup — no need to ask. See the Health Check template in Patterns & Templates.
+
+> **Always included for new REST projects:** Swagger UI is configured and mounted at `/api/spec` — no need to ask. See the Swagger Setup template in Patterns & Templates.
+
+---
+
+### Path A — New project (GraphQL)
+
+**Package manager:** Before scaffolding, check whether the project is being added to an existing monorepo. If yes, read the root `package.json` or workspace config and use whatever package manager is already in use. If no (standalone new project), always use **pnpm**.
+
+**HTTP adapter and GraphQL driver are fixed: Fastify + Mercurius. Do not ask about these.**
+
+Ask the remaining 6 axes in one message:
+
+```
+Before I scaffold this, I need to know your project setup:
+
+1. **Database / ORM**
+   - Drizzle ORM (sql`` tagged templates)
+   - Prisma (prisma client)
+   - TypeORM (repository pattern / query builder)
+   - MikroORM
+   - Raw `pg` / `postgres.js`
+   - Other (describe)
+
+2. **Logger**
+   - Pino (via `pino` or `nestjs-pino`)
+   - Winston
+   - NestJS built-in `Logger`
+   - Custom (describe the injection token or class)
+   - None
+
+3. **Injection style**
+   - String tokens (`@Inject('db')`, `@Inject('logger')`)
+   - Class-based (direct class injection)
+   - Mixed
+
+4. **Schema style**
+   - Code-first (`@ObjectType()`, `@Resolver()`, `@Field()` decorators — schema generated from TypeScript)
+   - Schema-first (`.graphql` SDL file, NestJS generates resolver stubs)
+
+5. **Auth / guards** — do resolvers need authentication?
+   - None / open resolvers
+   - JWT guard — `@UseGuards(GqlAuthGuard)` on resolver class
+   - API key or custom guard (describe)
+   - Per-resolver opt-in
+
+6. **Tests** — should test files be scaffolded?
+   - Yes — Jest unit tests for service + resolver
+   - No
+```
+
+After receiving answers, go to the **Confirmation block** below.
+
+> **Always included for new GraphQL projects:** a `/health` REST endpoint is scaffolded alongside the GraphQL API — no need to ask. See the Health Check template in Patterns & Templates.
+
+> **Always included for new GraphQL projects:** GraphiQL playground is enabled and accessible at `/graphql` via the Mercurius driver config — no need to ask. See the Mercurius Setup template in Patterns & Templates.
 
 ---
 
@@ -138,8 +199,11 @@ Detected from existing code:
 
 Emit this summary and wait for the user to confirm before doing anything else:
 
+**REST projects:**
+
 ```
 Stack confirmed:
+- API style: REST
 - Route prefix: [value]
 - HTTP adapter: [value]
 - ORM: [value]
@@ -147,6 +211,21 @@ Stack confirmed:
 - Logger: [value]
 - DI style: [value]
 - Response envelope: [value]
+- Auth: [value]
+- Tests: [value]
+
+Ready to update the skill config and then scaffold. Confirm?
+```
+
+**GraphQL projects:**
+
+```
+Stack confirmed:
+- API style: GraphQL (Fastify + Mercurius)
+- Schema style: [code-first / schema-first]
+- ORM: [value]
+- Logger: [value]
+- DI style: [value]
 - Auth: [value]
 - Tests: [value]
 
@@ -183,14 +262,16 @@ Adapt all generated code to match the confirmed stack. The templates below use *
 
 | Layer | Confirmed Tech | Notes |
 |---|---|---|
-| Framework | NestJS | Pure REST, no GraphQL |
-| Route prefix | [from gather] | |
-| HTTP adapter | [from gather] | |
+| Framework | NestJS | |
+| API style | [from gather] | REST or GraphQL (Fastify + Mercurius) |
+| Schema style | [from gather] | GraphQL only — code-first or schema-first |
+| Route prefix | [from gather] | REST only |
+| HTTP adapter | [from gather] | REST only; GraphQL always Fastify |
 | Validation | [from gather] | |
 | ORM | [from gather] | |
 | Logger | [from gather] | |
 | DI tokens | [from gather] | |
-| Response envelope | [from gather] | |
+| Response envelope | [from gather] | REST only |
 | Auth | [from gather] | |
 | Tests | [from gather] | |
 
@@ -199,6 +280,8 @@ Adapt all generated code to match the confirmed stack. The templates below use *
 ## Project Structure
 
 > Updated by the skill during setup to reflect the actual project layout.
+
+**REST project:**
 
 ```
 src/
@@ -221,11 +304,33 @@ src/
         └── <domain>.entity.ts
 ```
 
+**GraphQL project (Fastify + Mercurius, code-first):**
+
+```
+src/
+├── app.module.ts                    # Root — imports GraphQLModule + domain modules
+├── database/
+│   ├── database.module.ts           # Global — provides DB client token
+│   └── repositories/               # ALL repositories here, not co-located
+│       └── <entity>.repository.ts
+├── logger/
+│   └── logger.service.ts           # Global transient, provides logger token
+└── <domain>/
+    ├── <domain>.module.ts
+    ├── <domain>.resolver.ts         # @Resolver() — thin, delegates to service
+    ├── <domain>.service.ts
+    ├── models/
+    │   └── <domain>.model.ts        # @ObjectType() GraphQL type
+    └── dto/
+        ├── create-<domain>.input.ts # @InputType() for mutations
+        └── update-<domain>.input.ts
+```
+
 ---
 
 ## New Resource Scaffolding Checklist
 
-When adding a new domain resource, follow this order:
+**REST — when adding a new domain resource, follow this order:**
 
 - [ ] 1. Define Drizzle schema table (or ORM equivalent) in `src/database/schema/`
 - [ ] 2. Create entity interface in `<domain>/entities/<domain>.entity.ts`
@@ -236,6 +341,17 @@ When adding a new domain resource, follow this order:
 - [ ] 7. Create module in `<domain>/<domain>.module.ts`
 - [ ] 8. Register module in `app.module.ts` imports array
 - [ ] 9. Evaluate whether new shared pipes are needed → add to `src/common/pipes/`
+
+**GraphQL — when adding a new domain resource, follow this order:**
+
+- [ ] 1. Define Drizzle schema table (or ORM equivalent) in `src/database/schema/`
+- [ ] 2. Create `@ObjectType()` model in `<domain>/models/<domain>.model.ts`
+- [ ] 3. Create `@InputType()` DTOs in `<domain>/dto/`
+- [ ] 4. Create repository in `src/database/repositories/<domain>.repository.ts`
+- [ ] 5. Create service in `<domain>/<domain>.service.ts`
+- [ ] 6. Create resolver in `<domain>/<domain>.resolver.ts`
+- [ ] 7. Create module in `<domain>/<domain>.module.ts`
+- [ ] 8. Register module in `app.module.ts` imports array
 
 ---
 
@@ -661,7 +777,104 @@ Responds `200 { status: 'ok' }` at `GET /health`. No service, no repository, no 
 
 ---
 
-### 11. Error Handling
+### 11. Swagger Setup (new projects — always scaffold)
+
+Install the package matching the HTTP adapter (pnpm for standalone; match monorepo's package manager otherwise):
+
+```bash
+# Express (default)
+pnpm add @nestjs/swagger swagger-ui-express
+
+# Fastify
+pnpm add @nestjs/swagger @fastify/swagger @fastify/swagger-ui
+```
+
+Configure in `main.ts` **after** all global middleware (pipes, guards, filters) and **before** `app.listen()`. Swagger is mounted at `/api/spec`.
+
+```typescript
+// main.ts — Express variant
+import { NestFactory } from '@nestjs/core';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // ... global prefix, pipes, guards, filters here ...
+
+  const config = new DocumentBuilder()
+    .setTitle('API')
+    .setDescription('REST API documentation')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/spec', app, document);
+
+  await app.listen(process.env.PORT ?? 3000);
+}
+
+bootstrap();
+```
+
+```typescript
+// main.ts — Fastify variant
+import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+
+  // ... global prefix, pipes, guards, filters here ...
+
+  const config = new DocumentBuilder()
+    .setTitle('API')
+    .setDescription('REST API documentation')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/spec', app, document);
+
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+}
+
+bootstrap();
+```
+
+Swagger UI is accessible at `GET /api/spec`. The raw OpenAPI JSON is at `GET /api/spec-json`.
+
+**Decorating controllers for richer docs** — add these when scaffolding new controllers:
+
+```typescript
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+
+@ApiTags('widgets')
+@Controller('widgets')
+export class WidgetController {
+  @ApiOperation({ summary: 'List all widgets' })
+  @ApiResponse({ status: 200, description: 'Returns paginated widgets' })
+  @Get()
+  findAll() { ... }
+
+  @ApiOperation({ summary: 'Create a widget' })
+  @ApiResponse({ status: 201, description: 'Widget created' })
+  @ApiResponse({ status: 400, description: 'Validation error' })
+  @Post()
+  create() { ... }
+}
+```
+
+> If JWT auth is confirmed, also call `.addBearerAuth()` on the `DocumentBuilder` and add `@ApiBearerAuth()` to protected controllers.
+
+---
+
+### 12. Error Handling
 
 ```typescript
 // Surface DB errors without leaking internals
@@ -688,6 +901,188 @@ Standard exceptions:
 
 ---
 
+### 13. Mercurius + GraphQL Module Setup (new GraphQL projects — always scaffold)
+
+Install packages (pnpm for standalone; match monorepo's package manager otherwise):
+
+```bash
+pnpm add @nestjs/graphql @nestjs/mercurius mercurius fastify
+```
+
+Register `GraphQLModule` in `AppModule` using the Mercurius driver. Enable GraphiQL for development:
+
+```typescript
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
+
+@Module({
+  imports: [
+    GraphQLModule.forRoot<MercuriusDriverConfig>({
+      driver: MercuriusDriver,
+      autoSchemaFile: true,   // code-first: generate schema in memory
+      graphiql: true,         // GraphiQL UI at /graphql
+    }),
+    // ... domain modules
+  ],
+})
+export class AppModule {}
+```
+
+Bootstrap with `FastifyAdapter`:
+
+```typescript
+// main.ts
+import { NestFactory } from '@nestjs/core';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+}
+
+bootstrap();
+```
+
+GraphQL endpoint: `POST /graphql`. GraphiQL playground: `GET /graphql`.
+
+> For **schema-first**: replace `autoSchemaFile: true` with `typePaths: ['**/*.graphql']` and use `@nestjs/mercurius` code-gen to generate TypeScript types from the SDL.
+
+---
+
+### 14. GraphQL Object Type (code-first)
+
+Maps to a GraphQL type. Used as the return type of queries and mutations.
+
+```typescript
+// models/widget.model.ts
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+
+@ObjectType()
+export class Widget {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field()
+  productLineId: string;
+
+  @Field(() => String, { nullable: true })
+  description: string | null;
+
+  @Field()
+  createdAt: Date;
+}
+```
+
+---
+
+### 15. GraphQL Input Type (code-first)
+
+Use `@InputType()` for mutation arguments. Never reuse `@ObjectType()` as input.
+
+```typescript
+// dto/create-widget.input.ts
+import { InputType, Field } from '@nestjs/graphql';
+import { IsString, IsUUID, MinLength, MaxLength, IsOptional } from 'class-validator';
+
+@InputType()
+export class CreateWidgetInput {
+  @Field()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(255)
+  name: string;
+
+  @Field()
+  @IsUUID()
+  productLineId: string;
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  description?: string;
+}
+```
+
+> GraphQL projects use `class-validator` on `@InputType()` classes with a global `ValidationPipe`. Do not use Zod for GraphQL input validation.
+
+---
+
+### 16. GraphQL Resolver (code-first)
+
+Thin: delegate to service. No business logic in the resolver.
+
+```typescript
+// widget.resolver.ts
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
+import { Widget } from './models/widget.model';
+import { WidgetService } from './widget.service';
+import { CreateWidgetInput } from './dto/create-widget.input';
+import { UpdateWidgetInput } from './dto/update-widget.input';
+
+@Resolver(() => Widget)
+export class WidgetResolver {
+  constructor(private readonly widgetService: WidgetService) {}
+
+  @Query(() => [Widget], { name: 'widgets' })
+  findAll() {
+    return this.widgetService.findAll();
+  }
+
+  @Query(() => Widget, { name: 'widget' })
+  findOne(@Args('id', { type: () => ID }) id: string) {
+    return this.widgetService.findOne(id);
+  }
+
+  @Mutation(() => Widget)
+  createWidget(@Args('input') input: CreateWidgetInput) {
+    return this.widgetService.create(input);
+  }
+
+  @Mutation(() => Widget)
+  updateWidget(
+    @Args('id', { type: () => ID }) id: string,
+    @Args('input') input: UpdateWidgetInput,
+  ) {
+    return this.widgetService.update(id, input);
+  }
+
+  @Mutation(() => Boolean)
+  removeWidget(@Args('id', { type: () => ID }) id: string) {
+    return this.widgetService.remove(id);
+  }
+}
+```
+
+**GraphQL module:**
+
+```typescript
+// widget.module.ts
+import { Module } from '@nestjs/common';
+import { WidgetResolver } from './widget.resolver';
+import { WidgetService } from './widget.service';
+import { WidgetRepository } from '../database/repositories/widget.repository';
+
+@Module({
+  providers: [WidgetResolver, WidgetService, WidgetRepository],
+  exports: [WidgetService],
+})
+export class WidgetModule {}
+```
+
+> No `controllers` array for GraphQL modules.
+
+---
+
 ## Rules
 
 1. **No raw SQL strings.** Always `` sql`...` `` tagged templates (Drizzle). No string interpolation into queries.
@@ -703,3 +1098,10 @@ Standard exceptions:
 11. **Wrap unreliable external calls** (queues, S3, third-party APIs) with retry logic and a try/catch that rethrows as `InternalServerErrorException`.
 12. **Register new modules in `app.module.ts` immediately.**
 13. **No `class-validator` / `class-transformer` if Zod is the confirmed validator.** Do not mix systems.
+14. **Swagger always at `/api/spec` for new REST projects.** Call `SwaggerModule.setup('api/spec', ...)` in `main.ts` after global middleware and before `app.listen()`. Add `@ApiTags` and `@ApiOperation` decorators when scaffolding controllers.
+15. **GraphQL projects always use Fastify + Mercurius.** Never use Express for a GraphQL project.
+16. **GraphQL projects use `class-validator` on `@InputType()` classes** with a global `ValidationPipe`. Do not use Zod for GraphQL input validation.
+17. **Resolvers are thin.** Delegate to service immediately — no business logic, no DB calls in the resolver.
+18. **Never reuse `@ObjectType()` as `@InputType()`.** Define separate Input classes for mutations.
+19. **GraphiQL is always enabled** via `graphiql: true` in `MercuriusDriverConfig` for new GraphQL projects.
+20. **Package manager for new standalone projects is pnpm.** If adding to a monorepo, detect and match the repo's existing package manager before installing anything.

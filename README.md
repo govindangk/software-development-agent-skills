@@ -18,6 +18,13 @@ Creates structured JIRA tickets from code analysis. Performs a gap analysis befo
 
 ---
 
+### [linear-issue-creation](./linear-issue-creation/SKILL.md)
+Creates structured Linear issues from code analysis. Performs a gap analysis before drafting, surfaces ambiguous requirements, and requires explicit confirmation before creating or updating issues. Supports Linear-specific fields: Team, Project, Priority, Status, Cycle, Assignee, Estimate, Labels, and Parent (sub-issues).
+
+**Trigger:** "create a Linear issue", "open a Linear issue", "log this in Linear", "write up an issue for this"
+
+---
+
 ### [nestjs-backend](./nestjs-backend/SKILL.md)
 Scaffolds and extends NestJS backends — REST and GraphQL. Detects the existing stack (HTTP adapter, ORM, logger, validation, DI style, auth, tests) before generating any code. Supports new and existing projects.
 

@@ -1,6 +1,6 @@
 # Skills
 
-A collection of Claude Code skills for common development tasks.
+A collection of agent skills which I use for software development with AI coding tools. 
 
 ## Available Skills
 

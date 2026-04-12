@@ -83,6 +83,8 @@ After receiving answers, go to the **Confirmation block** below.
 
 > **Always included for new REST projects:** Swagger UI is configured and mounted at `/api/spec` — no need to ask. See the Swagger Setup template in Patterns & Templates.
 
+> **Always included for new REST projects:** TypeScript path aliases are configured (`@/*` → `src/*`) — no need to ask. See the Path Aliases template in Patterns & Templates.
+
 ---
 
 ### Path A — New project (GraphQL)
@@ -136,6 +138,8 @@ After receiving answers, go to the **Confirmation block** below.
 > **Always included for new GraphQL projects:** a `/health` REST endpoint is scaffolded alongside the GraphQL API — no need to ask. See the Health Check template in Patterns & Templates.
 
 > **Always included for new GraphQL projects:** GraphiQL playground is enabled and accessible at `/graphql` via the Mercurius driver config — no need to ask. See the Mercurius Setup template in Patterns & Templates.
+
+> **Always included for new GraphQL projects:** TypeScript path aliases are configured (`@/*` → `src/*`) — no need to ask. See the Path Aliases template in Patterns & Templates.
 
 ---
 
@@ -811,7 +815,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/spec', app, document);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 9000);
 }
 
 bootstrap();
@@ -841,7 +845,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/spec', app, document);
 
-  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+  await app.listen(process.env.PORT ?? 9000, '0.0.0.0');
 }
 
 bootstrap();
@@ -944,7 +948,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+  await app.listen(process.env.PORT ?? 9000, '0.0.0.0');
 }
 
 bootstrap();
@@ -1083,6 +1087,53 @@ export class WidgetModule {}
 
 ---
 
+### 17. Path Aliases (new projects — always scaffold)
+
+Install runtime path resolution support:
+
+```bash
+pnpm add -D tsconfig-paths
+```
+
+**`tsconfig.json`** — add `baseUrl` and `paths` inside `compilerOptions`:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+**`tsconfig.json`** — add a `ts-node` block at the top level (used by Jest and `nest start` in dev):
+
+```json
+{
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}
+```
+
+With these in place, imports resolve as:
+
+```typescript
+// Instead of: import { WidgetService } from '../../widget/widget.service';
+import { WidgetService } from '@/widget/widget.service';
+
+// Instead of: import { UuidValidationPipe } from '../../../common/pipes/uuid-validation.pipe';
+import { UuidValidationPipe } from '@/common/pipes/uuid-validation.pipe';
+```
+
+**All generated code must use `@/` imports** — never relative `../../` paths.
+
+> NestJS CLI (`nest build`) resolves `paths` automatically via `tsconfig-paths-webpack-plugin` at build time. No extra webpack config needed.
+
+---
+
 ## Rules
 
 1. **No raw SQL strings.** Always `` sql`...` `` tagged templates (Drizzle). No string interpolation into queries.
@@ -1105,3 +1156,4 @@ export class WidgetModule {}
 18. **Never reuse `@ObjectType()` as `@InputType()`.** Define separate Input classes for mutations.
 19. **GraphiQL is always enabled** via `graphiql: true` in `MercuriusDriverConfig` for new GraphQL projects.
 20. **Package manager for new standalone projects is pnpm.** If adding to a monorepo, detect and match the repo's existing package manager before installing anything.
+21. **Always use `@/` path aliases in generated code.** Never emit relative `../../` imports. Path aliases (`@/*` → `src/*`) are always configured for new projects.

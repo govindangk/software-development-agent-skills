@@ -25,8 +25,22 @@ Scaffolds and extends NestJS backends — REST and GraphQL. Detects the existing
 - **GraphQL:** Always Fastify + Mercurius (code-first or schema-first), resolvers/object types/input types. GraphiQL always enabled.
 - New standalone projects always use **pnpm**; monorepo projects match the repo's existing package manager.
 - Health check endpoint always scaffolded for new projects.
+- TypeScript path aliases (`@/*` → `src/*`) always configured; all generated imports use `@/` — never relative paths.
+- Default port **9000** (`process.env.PORT ?? 9000`).
 
 **Trigger:** NestJS backend work — new projects (REST or GraphQL), adding resources, extending existing APIs
+
+---
+
+### [react-scaffolding](./react-scaffolding/SKILL.md)
+Scaffolds a production-ready React + TypeScript project using Vite and TanStack Start. Prompts for styling library (Tailwind CSS + HeadlessUI or Mantine) and API type (REST or GraphQL), then wires up the full stack: TanStack Query, TanStack Router, Jotai, Vitest + Testing Library, Playwright E2E, and ESLint with type-aware rules. All steps are executed directly — no narration unless a decision is needed.
+
+- **REST:** Axios (`!=1.14.0` — compromised version excluded) with typed `get/post/put/patch/del` generic methods.
+- **GraphQL:** `graphql-request` with a typed `request<TData, TVariables>` wrapper over `GraphQLClient`.
+- Per-module path aliases (`@lib/*`, `@store/*`, `@routes/*`, etc.) with ESLint `no-restricted-imports` rule banning `../` cross-module imports.
+- New standalone projects always use **pnpm**; monorepo projects match the repo's existing package manager.
+
+**Trigger:** "new React project", "scaffold a web app", "spin up a React app", "new frontend project", mentions of Vite, TanStack, or any bundled library
 
 ---
 

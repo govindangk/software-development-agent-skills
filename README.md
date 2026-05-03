@@ -57,3 +57,15 @@ Audits npm/pnpm/yarn projects against a known-bad package database. Detects comp
 - **Shai-Hulud v1/v2** (Sep + Nov 2025) — CRITICAL: self-replicating worm that compromised 800+ packages
 
 **Trigger:** "npm security", "supply chain audit", "check for compromised packages", mentions of Shai-Hulud or axios compromise
+
+---
+
+### [turbo-monorepo-scaffold](./turbo-monorepo-scaffold/SKILL.md)
+Scaffolds production-ready pnpm + Turborepo monorepos from scratch. Parallel-first pipeline topology — everything runs in parallel by default; serialization is added only when observed run timings prove a data dependency. Includes an adaptive learning loop that watches real `turbo run` timings and automatically tightens the pipeline config over time via `turbo-learn.json`.
+
+- Asks one upfront question: what languages/frameworks the monorepo will contain (TypeScript libs, Next.js apps, Go services, Python workers, etc.)
+- Scaffolds root structure (`apps/`, `packages/`, `libs/`), `pnpm-workspace.yaml`, `turbo.json`, and per-language package templates.
+- Always uses **pnpm** as the package manager.
+- `cache: false` on all turbo tasks — turbo caching is intentionally disabled.
+
+**Trigger:** "start a new monorepo", "set up workspaces", "scaffold a package", "new turbo project", mentions of Turborepo or pnpm workspaces

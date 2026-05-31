@@ -11,7 +11,7 @@ Clone the repo and add a plugin reference in your project's `.claude/settings.js
 
 ```json
 {
-  "plugins": ["path/to/software-development-agent-skills"]
+  "plugins": ["skills@git+https://github.com/govindangk/software-development-agent-skills"]
 }
 ```
 </details>

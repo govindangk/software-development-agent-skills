@@ -1,18 +1,16 @@
 # Installing in OpenCode
 
-## Option 1 — Plugin (recommended)
+## Option 1 — Plugin via git (recommended)
 
 Add this repo as a plugin in your `opencode.json` (global at `~/.config/opencode/opencode.json` or project-level):
 
 ```json
 {
-  "plugin": ["skills@git+https://github.com/govindg/skills.git"]
+  "plugin": ["@govindangk/software-development-agent-skills@git+https://github.com/govindangk/software-development-agent-skills.git"]
 }
 ```
 
-Restart OpenCode. All skills are auto-discovered and available via the `skill` tool.
-
-> **Note:** Replace the URL with this repo's actual GitHub URL once it is published.
+OpenCode installs the plugin via Bun on startup. All skills are auto-discovered and available via the `skill` tool.
 
 ## Option 2 — Local plugin
 
@@ -32,4 +30,4 @@ Copy individual skill directories to your project's `.opencode/skills/` folder:
 cp -r brainstorming writing-plans executing-plans /your/project/.opencode/skills/
 ```
 
-OpenCode also recognises `.agents/skills/` and `.claude/skills/` if you prefer those paths.
+OpenCode also recognises `~/.config/opencode/skills/` for global (user-level) skills.

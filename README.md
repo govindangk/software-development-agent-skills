@@ -7,13 +7,16 @@ A collection of agent skills for software development with AI coding tools. Skil
 <details>
 <summary><strong>Claude Code</strong></summary>
 
-Clone the repo and add a plugin reference in your project's `.claude/settings.json`:
+Add the marketplace, then install the plugin:
 
-```json
-{
-  "plugins": ["skills@git+https://github.com/govindangk/software-development-agent-skills"]
-}
+```shell
+/plugin marketplace add govindangk/software-development-agent-skills
+/plugin install skills@govindangk-skills
 ```
+
+Skills are namespaced by the plugin name, e.g. `/skills:brainstorming`.
+
+Run `/reload-plugins` if skills don't appear immediately.
 </details>
 
 <details>
@@ -23,11 +26,11 @@ Add to `opencode.json` (global at `~/.config/opencode/opencode.json` or project-
 
 ```json
 {
-  "plugin": ["skills@git+https://github.com/govindangk/software-development-agent-skills.git"]
+  "plugin": ["@govindangk/software-development-agent-skills@git+https://github.com/govindangk/software-development-agent-skills.git"]
 }
 ```
 
-See [`.opencode/INSTALL.md`](./.opencode/INSTALL.md) for more options.
+OpenCode installs the plugin via Bun on startup. See [`.opencode/INSTALL.md`](./.opencode/INSTALL.md) for local-path and manual-copy alternatives.
 </details>
 
 <details>
@@ -51,7 +54,10 @@ Copilot has no native skills system. Run the install script to generate a `.gith
 
 ```bash
 # Clone this repo, then:
-bash /path/to/skills/install.sh --copilot /path/to/your/project
+bash /path/to/skills/install.sh /path/to/your/project
+
+# Or for the current directory:
+bash /path/to/skills/install.sh
 ```
 </details>
 

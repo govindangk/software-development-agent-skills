@@ -1,6 +1,15 @@
 {
-  "displayName": "Skills",
-  "shortDescription": "Scaffolding, security auditing, issue management, and design-to-build workflows",
-  "category": "Coding",
-  "tags": ["scaffolding", "tdd", "debugging", "planning", "security", "nestjs", "react", "turbo"]
+  "name": "govindangk-skills",
+  "owner": {
+    "name": "Govind G"
+  },
+  "plugins": [
+    {
+      "name": "skills",
+      "source": "./",
+      "description": "Scaffolding, security auditing, issue management, and design-to-build workflows",
+      "category": "Coding",
+      "tags": ["scaffolding", "tdd", "debugging", "planning", "security", "nestjs", "react", "turbo"]
+    }
+  ]
 }

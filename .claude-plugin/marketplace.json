@@ -1,0 +1,6 @@
+{
+  "displayName": "Skills",
+  "shortDescription": "Scaffolding, security auditing, issue management, and design-to-build workflows",
+  "category": "Coding",
+  "tags": ["scaffolding", "tdd", "debugging", "planning", "security", "nestjs", "react", "turbo"]
+}

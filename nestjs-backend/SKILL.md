@@ -1,3 +1,12 @@
+---
+name: nestjs-backend
+description: >
+  Scaffolds and extends NestJS backends — REST and GraphQL. Use when asked to create
+  a new NestJS project, add a resource, extend an existing API, or set up a NestJS backend.
+  Detects the existing stack before generating any code. Trigger phrases: NestJS backend work,
+  new projects (REST or GraphQL), adding resources, extending existing APIs.
+---
+
 # NestJS Backend Skill
 
 ## Step 1 — Gather Project Context (Always Run First)

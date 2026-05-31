@@ -1,6 +1,61 @@
 # Skills
 
-A collection of agent skills which I use for software development with AI coding tools. 
+A collection of agent skills for software development with AI coding tools. Skills are in `SKILL.md` format and work with Claude Code, pi.dev, OpenCode, GitHub Copilot, and Codex.
+
+## Installation
+
+> **Note:** Replace the GitHub URL below with the actual URL once this repo is published.
+
+<details>
+<summary><strong>Claude Code</strong></summary>
+
+```
+/plugin install skills@<marketplace>
+```
+
+Or clone this repo and add a local plugin reference in your project's `.claude/settings.json`.
+</details>
+
+<details>
+<summary><strong>OpenCode</strong></summary>
+
+Add to `opencode.json` (global at `~/.config/opencode/opencode.json` or project-level):
+
+```json
+{
+  "plugin": ["skills@git+https://github.com/govindg/skills.git"]
+}
+```
+
+See [`.opencode/INSTALL.md`](./.opencode/INSTALL.md) for more options.
+</details>
+
+<details>
+<summary><strong>pi.dev</strong></summary>
+
+```
+pi install git:github.com/govindg/skills
+```
+</details>
+
+<details>
+<summary><strong>Codex</strong></summary>
+
+In Codex App: Plugins sidebar → Coding section → find "Skills" → click `+`
+</details>
+
+<details>
+<summary><strong>GitHub Copilot</strong></summary>
+
+Copilot has no native skills system. Run the install script to generate a `.github/copilot-instructions.md` in your project:
+
+```bash
+# Clone this repo, then:
+bash /path/to/skills/install.sh --copilot /path/to/your/project
+```
+</details>
+
+---
 
 ## Available Skills
 

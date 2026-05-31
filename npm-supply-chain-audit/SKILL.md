@@ -1,3 +1,12 @@
+---
+name: npm-supply-chain-audit
+description: >
+  Audits npm/pnpm/yarn projects against a known-bad package database. Detects compromised
+  versions, banned packages, and malicious files in node_modules. Tracks active supply chain
+  threats including Axios RAT and Shai-Hulud worms. Trigger phrases: "npm security",
+  "supply chain audit", "check for compromised packages", mentions of Shai-Hulud or axios compromise.
+---
+
 # npm Supply Chain Audit — Copilot Instructions
 
 When the user asks about npm security, supply chain attacks, dependency auditing,

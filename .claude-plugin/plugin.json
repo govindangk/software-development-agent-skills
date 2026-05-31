@@ -1,0 +1,9 @@
+{
+  "name": "skills",
+  "version": "1.0.0",
+  "description": "Production-focused skills for software development: scaffolding, security auditing, issue management, and structured design-to-build cycles.",
+  "author": { "name": "Govind G" },
+  "homepage": "https://github.com/govindg/skills",
+  "license": "MIT",
+  "skills": "./"
+}

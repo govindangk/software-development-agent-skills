@@ -1,0 +1,13 @@
+{
+  "name": "@govindg/skills",
+  "version": "1.0.0",
+  "description": "Production-focused skills for AI coding tools — scaffolding, security auditing, issue management, and design-to-build workflows",
+  "license": "MIT",
+  "type": "module",
+  "skills": "./",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/govindg/skills"
+  },
+  "keywords": ["skills", "agent", "claude-code", "opencode", "codex", "scaffolding", "tdd", "security"]
+}

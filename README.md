@@ -4,16 +4,16 @@ A collection of agent skills for software development with AI coding tools. Skil
 
 ## Installation
 
-> **Note:** Replace the GitHub URL below with the actual URL once this repo is published.
-
 <details>
 <summary><strong>Claude Code</strong></summary>
 
-```
-/plugin install skills@<marketplace>
-```
+Clone the repo and add a plugin reference in your project's `.claude/settings.json`:
 
-Or clone this repo and add a local plugin reference in your project's `.claude/settings.json`.
+```json
+{
+  "plugins": ["path/to/software-development-agent-skills"]
+}
+```
 </details>
 
 <details>
@@ -23,7 +23,7 @@ Add to `opencode.json` (global at `~/.config/opencode/opencode.json` or project-
 
 ```json
 {
-  "plugin": ["skills@git+https://github.com/govindg/skills.git"]
+  "plugin": ["skills@git+https://github.com/govindangk/software-development-agent-skills.git"]
 }
 ```
 
@@ -34,7 +34,7 @@ See [`.opencode/INSTALL.md`](./.opencode/INSTALL.md) for more options.
 <summary><strong>pi.dev</strong></summary>
 
 ```
-pi install git:github.com/govindg/skills
+pi install git:github.com/govindangk/software-development-agent-skills
 ```
 </details>
 

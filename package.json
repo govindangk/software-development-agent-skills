@@ -1,5 +1,5 @@
 {
-  "name": "@govindg/skills",
+  "name": "@govindangk/software-development-agent-skills",
   "version": "1.0.0",
   "description": "Production-focused skills for AI coding tools — scaffolding, security auditing, issue management, and design-to-build workflows",
   "license": "MIT",
@@ -7,7 +7,7 @@
   "skills": "./",
   "repository": {
     "type": "git",
-    "url": "https://github.com/govindg/skills"
+    "url": "https://github.com/govindangk/software-development-agent-skills"
   },
   "keywords": ["skills", "agent", "claude-code", "opencode", "codex", "scaffolding", "tdd", "security"]
 }

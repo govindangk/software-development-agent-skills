@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Production-focused skills for software development: scaffolding, security auditing, issue management, and structured design-to-build cycles.",
   "author": { "name": "Govind G" },
-  "homepage": "https://github.com/govindg/skills",
+  "homepage": "https://github.com/govindangk/software-development-agent-skills",
   "license": "MIT",
   "skills": "./"
 }
